@@ -2,13 +2,38 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { X, MapPin, Send, Copy, Check, AlertTriangle, Loader2, Shield } from "lucide-react";
+import { X, MapPin, Send, Copy, Check, AlertTriangle, Loader2, Shield, Lock, EyeOff, Fingerprint } from "lucide-react";
 import { EVENT_TYPES, scaleCoord } from "@/lib/utils";
 import { generatePassphrase, generateCommitment } from "@/lib/pedersen";
 
 interface ReportSheetProps {
   onClose: () => void;
   initialLocation: { lat: number; lng: number } | null;
+}
+
+function PrivacyShield() {
+  return (
+    <div className="p-3 rounded-xl bg-[#7B3FE4]/5 border border-[#7B3FE4]/15">
+      <div className="flex items-center gap-2 mb-2">
+        <Shield className="w-4 h-4 text-[#7B3FE4] privacy-shield-pulse" />
+        <span className="text-xs font-bold text-[#7B3FE4] tracking-wider">PRIVACY SHIELD ACTIVE</span>
+      </div>
+      <div className="grid grid-cols-3 gap-2">
+        <div className="flex items-center gap-1.5">
+          <Lock className="w-3 h-3 text-[#7B3FE4]/60" />
+          <span className="text-[10px] text-white/40">Identity hidden</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <EyeOff className="w-3 h-3 text-[#4A3AFF]/60" />
+          <span className="text-[10px] text-white/40">No wallet link</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <Fingerprint className="w-3 h-3 text-[#00d4aa]/60" />
+          <span className="text-[10px] text-white/40">Nullifier ready</span>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function ReportSheet({ onClose, initialLocation }: ReportSheetProps) {
@@ -82,16 +107,21 @@ export default function ReportSheet({ onClose, initialLocation }: ReportSheetPro
         className="w-full max-w-lg bg-[#111111] rounded-t-3xl sm:rounded-3xl border border-white/10 p-6 max-h-[85vh] overflow-y-auto"
       >
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-teal-500/20 flex items-center justify-center">
-              <MapPin className="w-4 h-4 text-teal-400" />
+            <div className="w-8 h-8 rounded-lg bg-[#7B3FE4]/20 flex items-center justify-center">
+              <MapPin className="w-4 h-4 text-[#7B3FE4]" />
             </div>
             <h2 className="text-lg font-bold text-white">Report Incident</h2>
           </div>
           <button onClick={onClose} className="p-2 rounded-xl hover:bg-white/5">
             <X className="w-5 h-5 text-white/50" />
           </button>
+        </div>
+
+        {/* Privacy Shield — always visible */}
+        <div className="mb-4">
+          <PrivacyShield />
         </div>
 
         {/* Step: Event Type */}
@@ -105,7 +135,7 @@ export default function ReportSheet({ onClose, initialLocation }: ReportSheetPro
                   onClick={() => setEventType(et.id)}
                   className={`p-4 rounded-2xl border text-left transition-all ${
                     eventType === et.id
-                      ? "border-teal-500/50 bg-teal-500/10"
+                      ? "border-[#7B3FE4]/50 bg-[#7B3FE4]/10"
                       : "border-white/10 bg-white/[0.02] hover:bg-white/[0.05]"
                   }`}
                 >
@@ -117,7 +147,7 @@ export default function ReportSheet({ onClose, initialLocation }: ReportSheetPro
             </div>
             <button
               onClick={() => setStep(initialLocation ? "passphrase" : "location")}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 text-black font-semibold"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-[#7B3FE4] to-[#4A3AFF] text-white font-semibold"
             >
               Next
             </button>
@@ -134,7 +164,7 @@ export default function ReportSheet({ onClose, initialLocation }: ReportSheetPro
                 placeholder="Latitude (e.g., 19.4326)"
                 value={lat}
                 onChange={(e) => setLat(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-teal-500/50 focus:outline-none"
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#7B3FE4]/50 focus:outline-none"
                 step="any"
               />
               <input
@@ -142,7 +172,7 @@ export default function ReportSheet({ onClose, initialLocation }: ReportSheetPro
                 placeholder="Longitude (e.g., -99.1332)"
                 value={lng}
                 onChange={(e) => setLng(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-teal-500/50 focus:outline-none"
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/30 focus:border-[#7B3FE4]/50 focus:outline-none"
                 step="any"
               />
             </div>
@@ -153,7 +183,7 @@ export default function ReportSheet({ onClose, initialLocation }: ReportSheetPro
               <button
                 onClick={() => setStep("passphrase")}
                 disabled={!lat || !lng}
-                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 text-black font-semibold disabled:opacity-30"
+                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#7B3FE4] to-[#4A3AFF] text-white font-semibold disabled:opacity-30"
               >
                 Next
               </button>
@@ -170,7 +200,7 @@ export default function ReportSheet({ onClose, initialLocation }: ReportSheetPro
                 <span className="text-sm font-semibold text-amber-300">Save your passphrase!</span>
               </div>
               <p className="text-xs text-amber-200/60">
-                This passphrase is the ONLY way to claim rewards later. Store it safely. It&apos;s never sent to the blockchain.
+                This passphrase is the ONLY way to claim rewards later. It generates your Pedersen commitment and nullifier. Store it safely — it&apos;s never sent to the blockchain.
               </p>
             </div>
 
@@ -183,10 +213,10 @@ export default function ReportSheet({ onClose, initialLocation }: ReportSheetPro
               </button>
             ) : (
               <div className="space-y-3">
-                <div className="p-4 rounded-2xl bg-teal-500/10 border border-teal-500/20">
+                <div className="p-4 rounded-2xl bg-[#7B3FE4]/10 border border-[#7B3FE4]/20">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-teal-400 font-medium">YOUR PASSPHRASE</span>
-                    <button onClick={copyPassphrase} className="flex items-center gap-1 text-xs text-teal-300">
+                    <span className="text-xs text-[#7B3FE4] font-medium">YOUR PASSPHRASE</span>
+                    <button onClick={copyPassphrase} className="flex items-center gap-1 text-xs text-[#7B3FE4]">
                       {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                       {copied ? "Copied!" : "Copy"}
                     </button>
@@ -194,7 +224,7 @@ export default function ReportSheet({ onClose, initialLocation }: ReportSheetPro
                   <p className="text-lg font-mono text-white font-bold tracking-wide">{passphrase}</p>
                 </div>
                 <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5">
-                  <span className="text-xs text-white/30 font-medium">COMMITMENT (ON-CHAIN)</span>
+                  <span className="text-xs text-white/30 font-medium">PEDERSEN COMMITMENT (ON-CHAIN)</span>
                   <p className="text-xs font-mono text-white/50 mt-1 break-all">{commitment}</p>
                 </div>
               </div>
@@ -211,7 +241,7 @@ export default function ReportSheet({ onClose, initialLocation }: ReportSheetPro
               <button
                 onClick={handleSubmit}
                 disabled={!passphrase}
-                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-500 text-black font-semibold disabled:opacity-30 flex items-center justify-center gap-2"
+                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#7B3FE4] to-[#4A3AFF] text-white font-semibold disabled:opacity-30 flex items-center justify-center gap-2"
               >
                 <Send className="w-4 h-4" />
                 Submit Anonymously
@@ -220,7 +250,7 @@ export default function ReportSheet({ onClose, initialLocation }: ReportSheetPro
 
             <p className="text-xs text-white/20 text-center flex items-center justify-center gap-1">
               <Shield className="w-3 h-3" />
-              Submitted via relayer — your wallet is never linked
+              Submitted via relayer — your wallet is never linked on-chain
             </p>
           </div>
         )}
@@ -228,28 +258,28 @@ export default function ReportSheet({ onClose, initialLocation }: ReportSheetPro
         {/* Step: Submitting */}
         {step === "submitting" && (
           <div className="flex flex-col items-center justify-center py-12">
-            <Loader2 className="w-12 h-12 text-teal-400 animate-spin mb-4" />
+            <Loader2 className="w-12 h-12 text-[#7B3FE4] animate-spin mb-4" />
             <p className="text-white/80 font-medium">Submitting via relayer...</p>
-            <p className="text-sm text-white/40 mt-1">Your identity remains hidden</p>
+            <p className="text-sm text-white/40 mt-1">Your identity remains hidden behind Pedersen commitment</p>
           </div>
         )}
 
         {/* Step: Done */}
         {step === "done" && (
           <div className="flex flex-col items-center justify-center py-8">
-            <div className="w-16 h-16 rounded-full bg-teal-500/20 flex items-center justify-center mb-4">
-              <Check className="w-8 h-8 text-teal-400" />
+            <div className="w-16 h-16 rounded-full bg-[#7B3FE4]/20 flex items-center justify-center mb-4">
+              <Check className="w-8 h-8 text-[#7B3FE4]" />
             </div>
             <h3 className="text-xl font-bold text-white mb-2">Report Submitted!</h3>
             <p className="text-sm text-white/50 mb-4 text-center">
-              Your anonymous report is now on Starknet. Keep your passphrase to claim rewards.
+              Your anonymous report is now on Starknet. Only your Pedersen commitment is stored on-chain. Keep your passphrase to claim rewards.
             </p>
             {txHash && (
               <a
                 href={`https://sepolia.starkscan.co/tx/${txHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-teal-400 underline mb-4"
+                className="text-sm text-[#7B3FE4] underline mb-4"
               >
                 View on StarkScan ↗
               </a>

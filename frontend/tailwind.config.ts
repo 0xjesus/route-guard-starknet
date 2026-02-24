@@ -17,6 +17,13 @@ const config: Config = {
           800: "#cccccc",
           900: "#f5f5f5",
         },
+        starknet: {
+          blue: "#29296E",
+          purple: "#7B3FE4",
+          orange: "#FF6B35",
+          indigo: "#4A3AFF",
+          violet: "#8B5CF6",
+        },
         teal: {
           DEFAULT: "#00d4aa",
           50: "#00d4aa10",
@@ -40,11 +47,16 @@ const config: Config = {
       animation: {
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         glow: "glow 2s ease-in-out infinite alternate",
+        "glow-purple": "glowPurple 2s ease-in-out infinite alternate",
       },
       keyframes: {
         glow: {
           "0%": { boxShadow: "0 0 5px rgba(0,212,170,0.2)" },
           "100%": { boxShadow: "0 0 20px rgba(0,212,170,0.4)" },
+        },
+        glowPurple: {
+          "0%": { boxShadow: "0 0 5px rgba(123,63,228,0.2)" },
+          "100%": { boxShadow: "0 0 20px rgba(123,63,228,0.4)" },
         },
       },
     },

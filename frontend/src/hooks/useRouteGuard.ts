@@ -53,6 +53,16 @@ export function usePendingRewards(commitment: string | undefined) {
   return { rewards: data as bigint | undefined, isLoading, refetch };
 }
 
+export function useIsNullifierUsed(nullifier: string | undefined) {
+  const { data, isLoading } = useReadContract({
+    functionName: "is_nullifier_used",
+    abi: ROUTE_GUARD_ABI,
+    address: ROUTE_GUARD_ADDRESS as `0x${string}`,
+    args: nullifier ? [nullifier] : undefined,
+  });
+  return { isUsed: data as boolean | undefined, isLoading };
+}
+
 const EVENT_NAMES = ["Accident", "RoadClosure", "Protest", "PoliceActivity", "Hazard", "TrafficJam"] as const;
 
 export function useSubmitReport() {
@@ -123,12 +133,12 @@ export function useClaimRewards() {
   const { sendAsync, isPending, error } = useSendTransaction({});
 
   const claim = useCallback(
-    async (secret: string, salt: string, recipient: string) => {
+    async (secret: string, salt: string, nullifier: string, recipient: string) => {
       return sendAsync([
         {
           contractAddress: ROUTE_GUARD_ADDRESS,
           entrypoint: "claim_rewards",
-          calldata: CallData.compile({ secret, salt, recipient }),
+          calldata: CallData.compile({ secret, salt, nullifier, recipient }),
         },
       ]);
     },

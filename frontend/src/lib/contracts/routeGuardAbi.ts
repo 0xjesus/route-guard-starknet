@@ -42,6 +42,7 @@ export const ROUTE_GUARD_ABI = [
       { name: "latitude", type: "core::felt252" },
       { name: "longitude", type: "core::felt252" },
       { name: "event_type", type: "route_guard::route_guard::EventType" },
+      { name: "encrypted_event_type", type: "core::felt252" },
       { name: "status", type: "route_guard::route_guard::ReportStatus" },
       { name: "timestamp", type: "core::integer::u64" },
       { name: "expires_at", type: "core::integer::u64" },
@@ -76,6 +77,19 @@ export const ROUTE_GUARD_ABI = [
       },
       {
         type: "function",
+        name: "submit_private_report",
+        inputs: [
+          { name: "commitment", type: "core::felt252" },
+          { name: "latitude", type: "core::felt252" },
+          { name: "longitude", type: "core::felt252" },
+          { name: "event_type", type: "route_guard::route_guard::EventType" },
+          { name: "encrypted_event_type", type: "core::felt252" },
+        ],
+        outputs: [{ type: "core::integer::u256" }],
+        state_mutability: "external",
+      },
+      {
+        type: "function",
         name: "confirm_report",
         inputs: [{ name: "report_id", type: "core::integer::u256" }],
         outputs: [],
@@ -97,6 +111,7 @@ export const ROUTE_GUARD_ABI = [
         inputs: [
           { name: "secret", type: "core::felt252" },
           { name: "salt", type: "core::felt252" },
+          { name: "nullifier", type: "core::felt252" },
           { name: "recipient", type: "core::starknet::contract_address::ContractAddress" },
         ],
         outputs: [],
@@ -163,6 +178,23 @@ export const ROUTE_GUARD_ABI = [
       },
       {
         type: "function",
+        name: "is_nullifier_used",
+        inputs: [{ name: "nullifier", type: "core::felt252" }],
+        outputs: [{ type: "core::bool" }],
+        state_mutability: "view",
+      },
+      {
+        type: "function",
+        name: "verify_nullifier",
+        inputs: [
+          { name: "secret", type: "core::felt252" },
+          { name: "report_id", type: "core::felt252" },
+        ],
+        outputs: [{ type: "core::felt252" }],
+        state_mutability: "view",
+      },
+      {
+        type: "function",
         name: "update_params",
         inputs: [
           { name: "min_stake", type: "core::integer::u256" },
@@ -191,6 +223,7 @@ export const ROUTE_GUARD_ABI = [
       { name: "latitude", type: "core::felt252", kind: "data" },
       { name: "longitude", type: "core::felt252", kind: "data" },
       { name: "event_type", type: "route_guard::route_guard::EventType", kind: "data" },
+      { name: "encrypted_event_type", type: "core::felt252", kind: "data" },
       { name: "stake", type: "core::integer::u256", kind: "data" },
       { name: "expires_at", type: "core::integer::u64", kind: "data" },
     ],
@@ -221,6 +254,7 @@ export const ROUTE_GUARD_ABI = [
     kind: "struct",
     members: [
       { name: "commitment", type: "core::felt252", kind: "key" },
+      { name: "nullifier", type: "core::felt252", kind: "data" },
       { name: "recipient", type: "core::starknet::contract_address::ContractAddress", kind: "data" },
       { name: "amount", type: "core::integer::u256", kind: "data" },
     ],
