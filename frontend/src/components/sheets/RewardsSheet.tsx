@@ -127,7 +127,7 @@ export default function RewardsSheet({ onClose }: RewardsSheetProps) {
                   <Loader2 className="w-5 h-5 text-[#7B3FE4] animate-spin" />
                 ) : (
                   <p className="text-3xl font-bold text-[#7B3FE4]">
-                    {rewardAmount.toFixed(6)} <span className="text-lg text-[#7B3FE4]/60">ETH</span>
+                    {rewardAmount.toFixed(6)} <span className="text-lg text-[#7B3FE4]/60">STRK</span>
                   </p>
                 )}
               </div>

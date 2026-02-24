@@ -5,40 +5,32 @@ import { hash } from "starknet";
  * commitment = pedersen(secret_felt, salt_felt)
  * where secret_felt = starknetKeccak(passphrase)
  * and salt_felt = starknetKeccak(passphrase + "_salt")
- *
- * Uses starknet.js's computePedersenHash which maps to Starknet's
- * native Pedersen builtin — the same one used in Cairo contracts.
  */
 export function generateCommitment(passphrase: string): {
   commitment: string;
   secret: string;
   salt: string;
 } {
-  const secret = hash.starknetKeccak(passphrase);
-  const salt = hash.starknetKeccak(passphrase + "_salt");
+  const secretBn = hash.starknetKeccak(passphrase);
+  const saltBn = hash.starknetKeccak(passphrase + "_salt");
+
+  const secret = "0x" + secretBn.toString(16);
+  const salt = "0x" + saltBn.toString(16);
   const commitment = hash.computePedersenHash(secret, salt);
 
-  return {
-    commitment,
-    secret: secret.toString(),
-    salt: salt.toString(),
-  };
+  return { commitment, secret, salt };
 }
 
 /**
  * Generate a nullifier for double-claim prevention.
  * nullifier = pedersen(secret, report_id)
- *
- * Each (secret, report_id) pair produces a unique nullifier.
- * The contract checks nullifier uniqueness to prevent double-claims
- * without revealing the reporter's identity.
  */
 export function generateNullifier(secret: string, reportId: string): string {
   return hash.computePedersenHash(secret, reportId);
 }
 
 /**
- * Generate a random passphrase from BIP39-style words
+ * Generate a random passphrase from phonetic words
  */
 export function generatePassphrase(wordCount: number = 4): string {
   const words = [

@@ -109,7 +109,7 @@ export default function ConfirmSheet({ onClose }: ConfirmSheetProps) {
           </div>
 
           <div className="border-t border-white/5 pt-4">
-            <p className="text-sm text-white/50 mb-3">Send Regards (ETH)</p>
+            <p className="text-sm text-white/50 mb-3">Send Regards (STRK)</p>
             <div className="flex gap-3">
               <input
                 type="number"

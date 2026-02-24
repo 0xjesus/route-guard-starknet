@@ -78,6 +78,12 @@ export default function ReportSheet({ onClose, initialLocation }: ReportSheetPro
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to submit");
       setTxHash(data.txHash || "");
+      // Save passphrase to localStorage for reward claims
+      try {
+        const saved = JSON.parse(localStorage.getItem("routeguard_reports") || "[]");
+        saved.push({ passphrase, commitment: c, txHash: data.txHash, eventType, lat, lng, time: Date.now(), demo: !!data.demoMode });
+        localStorage.setItem("routeguard_reports", JSON.stringify(saved));
+      } catch {}
       setStep("done");
     } catch (err: any) {
       setError(err.message);
