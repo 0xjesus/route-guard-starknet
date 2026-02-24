@@ -1,0 +1,262 @@
+export const ROUTE_GUARD_ABI = [
+  {
+    type: "impl",
+    name: "RouteGuardImpl",
+    interface_name: "route_guard::route_guard::IRouteGuard",
+  },
+  {
+    type: "enum",
+    name: "route_guard::route_guard::EventType",
+    variants: [
+      { name: "Accident", type: "()" },
+      { name: "RoadClosure", type: "()" },
+      { name: "Protest", type: "()" },
+      { name: "PoliceActivity", type: "()" },
+      { name: "Hazard", type: "()" },
+      { name: "TrafficJam", type: "()" },
+    ],
+  },
+  {
+    type: "enum",
+    name: "route_guard::route_guard::ReportStatus",
+    variants: [
+      { name: "Active", type: "()" },
+      { name: "Confirmed", type: "()" },
+      { name: "Expired", type: "()" },
+      { name: "Slashed", type: "()" },
+    ],
+  },
+  {
+    type: "struct",
+    name: "core::integer::u256",
+    members: [
+      { name: "low", type: "core::integer::u128" },
+      { name: "high", type: "core::integer::u128" },
+    ],
+  },
+  {
+    type: "struct",
+    name: "route_guard::route_guard::Report",
+    members: [
+      { name: "commitment", type: "core::felt252" },
+      { name: "latitude", type: "core::felt252" },
+      { name: "longitude", type: "core::felt252" },
+      { name: "event_type", type: "route_guard::route_guard::EventType" },
+      { name: "status", type: "route_guard::route_guard::ReportStatus" },
+      { name: "timestamp", type: "core::integer::u64" },
+      { name: "expires_at", type: "core::integer::u64" },
+      { name: "stake", type: "core::integer::u256" },
+      { name: "regards", type: "core::integer::u256" },
+      { name: "confirmations", type: "core::integer::u32" },
+    ],
+  },
+  {
+    type: "enum",
+    name: "core::bool",
+    variants: [
+      { name: "False", type: "()" },
+      { name: "True", type: "()" },
+    ],
+  },
+  {
+    type: "interface",
+    name: "route_guard::route_guard::IRouteGuard",
+    items: [
+      {
+        type: "function",
+        name: "submit_report",
+        inputs: [
+          { name: "commitment", type: "core::felt252" },
+          { name: "latitude", type: "core::felt252" },
+          { name: "longitude", type: "core::felt252" },
+          { name: "event_type", type: "route_guard::route_guard::EventType" },
+        ],
+        outputs: [{ type: "core::integer::u256" }],
+        state_mutability: "external",
+      },
+      {
+        type: "function",
+        name: "confirm_report",
+        inputs: [{ name: "report_id", type: "core::integer::u256" }],
+        outputs: [],
+        state_mutability: "external",
+      },
+      {
+        type: "function",
+        name: "send_regards",
+        inputs: [
+          { name: "report_id", type: "core::integer::u256" },
+          { name: "amount", type: "core::integer::u256" },
+        ],
+        outputs: [],
+        state_mutability: "external",
+      },
+      {
+        type: "function",
+        name: "claim_rewards",
+        inputs: [
+          { name: "secret", type: "core::felt252" },
+          { name: "salt", type: "core::felt252" },
+          { name: "recipient", type: "core::starknet::contract_address::ContractAddress" },
+        ],
+        outputs: [],
+        state_mutability: "external",
+      },
+      {
+        type: "function",
+        name: "expire_report",
+        inputs: [{ name: "report_id", type: "core::integer::u256" }],
+        outputs: [],
+        state_mutability: "external",
+      },
+      {
+        type: "function",
+        name: "slash_report",
+        inputs: [{ name: "report_id", type: "core::integer::u256" }],
+        outputs: [],
+        state_mutability: "external",
+      },
+      {
+        type: "function",
+        name: "get_report",
+        inputs: [{ name: "report_id", type: "core::integer::u256" }],
+        outputs: [{ type: "route_guard::route_guard::Report" }],
+        state_mutability: "view",
+      },
+      {
+        type: "function",
+        name: "get_report_count",
+        inputs: [],
+        outputs: [{ type: "core::integer::u256" }],
+        state_mutability: "view",
+      },
+      {
+        type: "function",
+        name: "get_pending_rewards",
+        inputs: [{ name: "commitment", type: "core::felt252" }],
+        outputs: [{ type: "core::integer::u256" }],
+        state_mutability: "view",
+      },
+      {
+        type: "function",
+        name: "get_min_stake",
+        inputs: [],
+        outputs: [{ type: "core::integer::u256" }],
+        state_mutability: "view",
+      },
+      {
+        type: "function",
+        name: "get_confirmation_threshold",
+        inputs: [],
+        outputs: [{ type: "core::integer::u32" }],
+        state_mutability: "view",
+      },
+      {
+        type: "function",
+        name: "has_confirmed",
+        inputs: [
+          { name: "report_id", type: "core::integer::u256" },
+          { name: "confirmer", type: "core::starknet::contract_address::ContractAddress" },
+        ],
+        outputs: [{ type: "core::bool" }],
+        state_mutability: "view",
+      },
+      {
+        type: "function",
+        name: "update_params",
+        inputs: [
+          { name: "min_stake", type: "core::integer::u256" },
+          { name: "report_duration", type: "core::integer::u64" },
+          { name: "confirmation_threshold", type: "core::integer::u32" },
+        ],
+        outputs: [],
+        state_mutability: "external",
+      },
+    ],
+  },
+  {
+    type: "constructor",
+    name: "constructor",
+    inputs: [
+      { name: "owner", type: "core::starknet::contract_address::ContractAddress" },
+    ],
+  },
+  {
+    type: "event",
+    name: "route_guard::route_guard::RouteGuard::ReportSubmitted",
+    kind: "struct",
+    members: [
+      { name: "report_id", type: "core::integer::u256", kind: "key" },
+      { name: "commitment", type: "core::felt252", kind: "key" },
+      { name: "latitude", type: "core::felt252", kind: "data" },
+      { name: "longitude", type: "core::felt252", kind: "data" },
+      { name: "event_type", type: "route_guard::route_guard::EventType", kind: "data" },
+      { name: "stake", type: "core::integer::u256", kind: "data" },
+      { name: "expires_at", type: "core::integer::u64", kind: "data" },
+    ],
+  },
+  {
+    type: "event",
+    name: "route_guard::route_guard::RouteGuard::ReportConfirmed",
+    kind: "struct",
+    members: [
+      { name: "report_id", type: "core::integer::u256", kind: "key" },
+      { name: "confirmer", type: "core::starknet::contract_address::ContractAddress", kind: "data" },
+      { name: "new_count", type: "core::integer::u32", kind: "data" },
+    ],
+  },
+  {
+    type: "event",
+    name: "route_guard::route_guard::RouteGuard::RegardsSent",
+    kind: "struct",
+    members: [
+      { name: "report_id", type: "core::integer::u256", kind: "key" },
+      { name: "sender", type: "core::starknet::contract_address::ContractAddress", kind: "data" },
+      { name: "amount", type: "core::integer::u256", kind: "data" },
+    ],
+  },
+  {
+    type: "event",
+    name: "route_guard::route_guard::RouteGuard::RewardsClaimed",
+    kind: "struct",
+    members: [
+      { name: "commitment", type: "core::felt252", kind: "key" },
+      { name: "recipient", type: "core::starknet::contract_address::ContractAddress", kind: "data" },
+      { name: "amount", type: "core::integer::u256", kind: "data" },
+    ],
+  },
+  {
+    type: "event",
+    name: "route_guard::route_guard::RouteGuard::ReportExpired",
+    kind: "struct",
+    members: [
+      { name: "report_id", type: "core::integer::u256", kind: "key" },
+    ],
+  },
+  {
+    type: "event",
+    name: "route_guard::route_guard::RouteGuard::ReportSlashed",
+    kind: "struct",
+    members: [
+      { name: "report_id", type: "core::integer::u256", kind: "key" },
+      { name: "commitment", type: "core::felt252", kind: "data" },
+      { name: "slashed_amount", type: "core::integer::u256", kind: "data" },
+    ],
+  },
+  {
+    type: "event",
+    name: "route_guard::route_guard::RouteGuard::Event",
+    kind: "enum",
+    variants: [
+      { name: "ReportSubmitted", type: "route_guard::route_guard::RouteGuard::ReportSubmitted", kind: "nested" },
+      { name: "ReportConfirmed", type: "route_guard::route_guard::RouteGuard::ReportConfirmed", kind: "nested" },
+      { name: "RegardsSent", type: "route_guard::route_guard::RouteGuard::RegardsSent", kind: "nested" },
+      { name: "RewardsClaimed", type: "route_guard::route_guard::RouteGuard::RewardsClaimed", kind: "nested" },
+      { name: "ReportExpired", type: "route_guard::route_guard::RouteGuard::ReportExpired", kind: "nested" },
+      { name: "ReportSlashed", type: "route_guard::route_guard::RouteGuard::ReportSlashed", kind: "nested" },
+      { name: "OwnableEvent", type: "openzeppelin_access::ownable::ownable::OwnableComponent::Event", kind: "flat" },
+    ],
+  },
+] as const;
+
+export const ROUTE_GUARD_ADDRESS = process.env.NEXT_PUBLIC_ROUTEGUARD_ADDRESS || "0x0";
